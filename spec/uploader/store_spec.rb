@@ -29,15 +29,15 @@ describe CarrierWave::Uploader do
     before do
       @file = File.open(file_path('test.jpg'))
 
-      @stored_file = mock('a stored file')
-      @stored_file.stub!(:path).and_return('/path/to/somewhere')
-      @stored_file.stub!(:url).and_return('http://www.example.com')
+      @stored_file = double('a stored file')
+      allow(@stored_file).to receive(:path).and_return('/path/to/somewhere')
+      allow(@stored_file).to receive(:url).and_return('http://www.example.com')
 
-      @storage = mock('a storage engine')
-      @storage.stub!(:store!).and_return(@stored_file)
-      @storage.stub!(:identifier).and_return('this-is-me')
+      @storage = double('a storage engine')
+      allow(@storage).to receive(:store!).and_return(@stored_file)
+      allow(@storage).to receive(:identifier).and_return('this-is-me')
 
-      @uploader_class.storage.stub!(:new).with(@uploader).and_return(@storage)
+      allow(@uploader_class.storage).to receive(:new).with(@uploader).and_return(@storage)
     end
 
     it "should set the current path" do
@@ -159,8 +159,8 @@ describe CarrierWave::Uploader do
     end
 
     it "should not re-store a retrieved file" do
-      @stored_file = mock('a stored file')
-      @storage.stub!(:retrieve!).and_return(@stored_file)
+      @stored_file = double('a stored file')
+      allow(@storage).to receive(:retrieve!).and_return(@stored_file)
 
       @uploader_class.storage.should_not_receive(:store!)
       @uploader.retrieve_from_store!('monkey.txt')
@@ -170,15 +170,15 @@ describe CarrierWave::Uploader do
 
   describe '#retrieve_from_store!' do
     before do
-      @stored_file = mock('a stored file')
-      @stored_file.stub!(:path).and_return('/path/to/somewhere')
-      @stored_file.stub!(:url).and_return('http://www.example.com')
+      @stored_file = double('a stored file')
+      allow(@stored_file).to receive(:path).and_return('/path/to/somewhere')
+      allow(@stored_file).to receive(:url).and_return('http://www.example.com')
 
-      @storage = mock('a storage engine')
-      @storage.stub!(:retrieve!).and_return(@stored_file)
-      @storage.stub!(:identifier).and_return('this-is-me')
+      @storage = double('a storage engine')
+      allow(@storage).to receive(:retrieve!).and_return(@stored_file)
+      allow(@storage).to receive(:identifier).and_return('this-is-me')
 
-      @uploader_class.storage.stub!(:new).with(@uploader).and_return(@storage)
+      allow(@uploader_class.storage).to receive(:new).with(@uploader).and_return(@storage)
     end
 
     it "should set the current path" do
@@ -225,13 +225,13 @@ describe CarrierWave::Uploader do
       @file = File.open(file_path('test.jpg'))
       @uploader.store!(@file)
       @path = ::File.expand_path(@uploader.store_path, @uploader.root)
-      File.exist?(@path).should be_true
+      expect(File.exist?(@path)).to be true
     end
 
     it "should not create new files if there is no file" do
       @uploader.store!(nil)
       @path = ::File.expand_path(@uploader.store_path, @uploader.root)
-      File.exist?(@path).should be_false
+      expect(File.exist?(@path)).to be false
     end
   end
 
@@ -246,7 +246,7 @@ describe CarrierWave::Uploader do
       @file = File.open(file_path('test.jpg'))
       @uploader.store!(@file)
       @path = ::File.expand_path(@uploader.store_path, @uploader.root)
-      File.exist?(@path).should be_true
+      expect(File.exist?(@path)).to be true
       @uploader.url.should == '/test.jpg'
     end
   end
@@ -264,14 +264,14 @@ describe CarrierWave::Uploader do
       before do
         @file = File.open(file_path('test.jpg'))
 
-        @stored_file = mock('a stored file')
-        @stored_file.stub!(:path).and_return('/path/to/somewhere')
-        @stored_file.stub!(:url).and_return('http://www.example.com')
+        @stored_file = double('a stored file')
+        allow(@stored_file).to receive(:path).and_return('/path/to/somewhere')
+        allow(@stored_file).to receive(:url).and_return('http://www.example.com')
 
-        @storage = mock('a storage engine')
-        @storage.stub!(:store!).and_return(@stored_file)
+        @storage = double('a storage engine')
+        allow(@storage).to receive(:store!).and_return(@stored_file)
 
-        @uploader_class.storage.stub!(:new).with(@uploader).and_return(@storage)
+        allow(@uploader_class.storage).to receive(:new).with(@uploader).and_return(@storage)
       end
 
       it "should set the current path" do
@@ -293,14 +293,14 @@ describe CarrierWave::Uploader do
 
     describe '#retrieve_from_store!' do
       before do
-        @stored_file = mock('a stored file')
-        @stored_file.stub!(:path).and_return('/path/to/somewhere')
-        @stored_file.stub!(:url).and_return('http://www.example.com')
+        @stored_file = double('a stored file')
+        allow(@stored_file).to receive(:path).and_return('/path/to/somewhere')
+        allow(@stored_file).to receive(:url).and_return('http://www.example.com')
 
-        @storage = mock('a storage engine')
-        @storage.stub!(:retrieve!).and_return(@stored_file)
+        @storage = double('a storage engine')
+        allow(@storage).to receive(:retrieve!).and_return(@stored_file)
 
-        @uploader_class.storage.stub!(:new).with(@uploader).and_return(@storage)
+        allow(@uploader_class.storage).to receive(:new).with(@uploader).and_return(@storage)
       end
 
       it "should set the current path" do
@@ -333,7 +333,7 @@ describe CarrierWave::Uploader do
       @file = File.open(file_path('test.jpg'))
       @uploader_class.permissions = 0777
       @uploader_class.directory_permissions = 0777
-      CarrierWave.stub!(:generate_cache_id).and_return('1369894322-345-2255')
+      allow(CarrierWave).to receive(:generate_cache_id).and_return('1369894322-345-2255')
     end
 
     context "set to true" do
@@ -348,13 +348,13 @@ describe CarrierWave::Uploader do
         @stored_path = ::File.expand_path(@uploader.store_path, @uploader.root)
 
         @cached_path.should == public_path('uploads/tmp/1369894322-345-2255/test.jpg')
-        File.exist?(@cached_path).should be_true
-        File.exist?(@stored_path).should be_false
+        expect(File.exist?(@cached_path)).to be true
+        expect(File.exist?(@stored_path)).to be false
 
         @uploader.store!
 
-        File.exist?(@cached_path).should be_false
-        File.exist?(@stored_path).should be_true
+        expect(File.exist?(@cached_path)).to be false
+        expect(File.exist?(@stored_path)).to be true
       end
 
       it "should use move_to() during store!()" do

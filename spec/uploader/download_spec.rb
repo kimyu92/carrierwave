@@ -16,7 +16,7 @@ describe CarrierWave::Uploader::Download do
   describe '#download!' do
 
     before do
-      CarrierWave.stub!(:generate_cache_id).and_return('1369894322-345-2255')
+      allow(CarrierWave).to receive(:generate_cache_id).and_return('1369894322-345-2255')
 
       sham_rack_app = ShamRack.at('www.example.com').stub
       sham_rack_app.register_resource('/test.jpg', File.read(file_path('test.jpg')), 'image/jpg')
@@ -60,7 +60,7 @@ describe CarrierWave::Uploader::Download do
     it "should move it to the tmp dir" do
       @uploader.download!('http://www.example.com/test.jpg')
       @uploader.file.path.should == public_path('uploads/tmp/1369894322-345-2255/test.jpg')
-      @uploader.file.exists?.should be_true
+      expect(@uploader.file.exists?).to be true
     end
 
     it "should set the url" do

@@ -4,15 +4,15 @@
 # EXISTENCE
 
 Then /^there should be a file at '(.*?)'$/ do |file|
-  File.exist?(file_path(file)).should be_true
+  expect(File.exist?(file_path(file))).to be true
 end
 
 Then /^there should not be a file at '(.*?)'$/ do |file|
-  File.exist?(file_path(file)).should be_false
+  expect(File.exist?(file_path(file))).to be false
 end
 
 Then /^there should be a file called '(.*?)' somewhere in a subdirectory of '(.*?)'$/ do |file, directory|
-  Dir.glob(File.join(file_path(directory), '**', file)).any?.should be_true
+  expect(Dir.glob(File.join(file_path(directory), '**', file)).any?).to be true
 end
 
 ###

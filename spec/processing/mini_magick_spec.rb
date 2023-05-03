@@ -39,7 +39,7 @@ describe CarrierWave::MiniMagick do
       @instance.should have_dimensions(200, 200)
       ::MiniMagick::Image.open(@instance.current_path)['format'].should =~ /PNG/
     end
-    
+
     it "should scale up the image if it smaller than the given dimensions" do
       @instance.resize_to_fill(1000, 1000)
       @instance.should have_dimensions(1000, 1000)

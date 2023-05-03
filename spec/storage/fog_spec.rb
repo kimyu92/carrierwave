@@ -2,6 +2,6 @@
 
 require 'spec_helper'
 
-for credential in FOG_CREDENTIALS
+FOG_CREDENTIALS.each do |credential|
   fog_tests(credential)
 end

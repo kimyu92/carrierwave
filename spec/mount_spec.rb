@@ -178,17 +178,17 @@ describe CarrierWave::Mount do
 
       it "should be false when nothing has been assigned" do
         @instance.should_receive(:read_uploader).with(:image).and_return(nil)
-        @instance.image?.should be_false
+        expect(@instance).not_to be_image
       end
 
       it "should be false when an empty string has been assigned" do
         @instance.should_receive(:read_uploader).with(:image).and_return('')
-        @instance.image?.should be_false
+        expect(@instance).not_to be_image
       end
 
       it "should be true when a file has been cached" do
         @instance.image = stub_file('test.jpg')
-        @instance.image?.should be_true
+        expect(@instance).to be_image
       end
 
     end
@@ -226,8 +226,8 @@ describe CarrierWave::Mount do
     describe '#image_cache' do
 
       before do
-        @instance.stub!(:write_uploader)
-        @instance.stub!(:read_uploader).and_return(nil)
+        allow(@instance).to receive(:write_uploader)
+        allow(@instance).to receive(:read_uploader).and_return(nil)
       end
 
       it "should return nil when nothing has been assigned" do
@@ -250,8 +250,8 @@ describe CarrierWave::Mount do
     describe '#image_cache=' do
 
       before do
-        @instance.stub!(:write_uploader)
-        @instance.stub!(:read_uploader).and_return(nil)
+        allow(@instance).to receive(:write_uploader)
+        allow(@instance).to receive(:read_uploader).and_return(nil)
         CarrierWave::SanitizedFile.new(file_path('test.jpg')).copy_to(public_path('uploads/tmp/1369894322-123-1234/test.jpg'))
       end
 
@@ -327,8 +327,8 @@ describe CarrierWave::Mount do
     describe '#store_image!' do
 
       before do
-        @instance.stub!(:write_uploader)
-        @instance.stub!(:read_uploader).and_return(nil)
+        allow(@instance).to receive(:write_uploader)
+        allow(@instance).to receive(:read_uploader).and_return(nil)
       end
 
       it "should do nothing when no file has been uploaded" do
@@ -348,15 +348,15 @@ describe CarrierWave::Mount do
         @instance.remove_image = true
         @instance.store_image!
         @instance.image.should be_blank
-        File.exist?(path).should be_false
+        expect(File.exist?(path)).to be false
       end
     end
 
     describe '#remove_image!' do
 
       before do
-        @instance.stub!(:write_uploader)
-        @instance.stub!(:read_uploader).and_return(nil)
+        allow(@instance).to receive(:write_uploader)
+        allow(@instance).to receive(:read_uploader).and_return(nil)
       end
 
       it "should do nothing when no file has been uploaded" do
@@ -369,7 +369,7 @@ describe CarrierWave::Mount do
         path = @instance.image.current_path
         @instance.remove_image!
         @instance.image.should be_blank
-        File.exist?(path).should be_false
+        expect(File.exist?(path)).to be false
       end
     end
 
@@ -377,7 +377,7 @@ describe CarrierWave::Mount do
 
       it "should store a value" do
         @instance.remove_image = true
-        @instance.remove_image.should be_true
+        expect(@instance.remove_image).to be true
       end
 
     end
@@ -386,27 +386,27 @@ describe CarrierWave::Mount do
 
       it "should be true when the value is truthy" do
         @instance.remove_image = true
-        @instance.remove_image?.should be_true
+        expect(@instance).to be_remove_image
       end
 
       it "should be false when the value is falsey" do
         @instance.remove_image = false
-        @instance.remove_image?.should be_false
+        expect(@instance).not_to be_remove_image
       end
 
       it "should be false when the value is ''" do
         @instance.remove_image = ''
-        @instance.remove_image?.should be_false
+        expect(@instance).not_to be_remove_image
       end
 
       it "should be false when the value is '0'" do
         @instance.remove_image = '0'
-        @instance.remove_image?.should be_false
+        expect(@instance).not_to be_remove_image
       end
 
       it "should be false when the value is 'false'" do
         @instance.remove_image = 'false'
-        @instance.remove_image?.should be_false
+        expect(@instance).not_to be_remove_image
       end
 
     end
@@ -435,7 +435,7 @@ describe CarrierWave::Mount do
           @instance.image = stub_file('test.jpg')
           e = @instance.image_integrity_error
           e.should be_an_instance_of(CarrierWave::IntegrityError)
-          e.message.lines.grep(/^You are not allowed to upload/).should be_true
+          expect(e.message.lines).to include(/^You are not allowed to upload/)
         end
 
         it "should be an error instance if file was downloaded" do
@@ -445,7 +445,7 @@ describe CarrierWave::Mount do
           @instance.remote_image_url = "http://www.example.com/test.jpg"
           e = @instance.image_integrity_error
           e.should be_an_instance_of(CarrierWave::IntegrityError)
-          e.message.lines.grep(/^You are not allowed to upload/).should be_true
+          expect(e.message.lines).to include(/^You are not allowed to upload/)
         end
 
         it "should be an error instance when image file is assigned and remote_image_url is blank" do
@@ -453,7 +453,7 @@ describe CarrierWave::Mount do
           @instance.remote_image_url = ""
           e = @instance.image_integrity_error
           e.should be_an_instance_of(CarrierWave::IntegrityError)
-          e.message.lines.grep(/^You are not allowed to upload/).should be_true
+          expect(e.message.lines).to include(/^You are not allowed to upload/)
         end
       end
     end
@@ -573,7 +573,7 @@ describe CarrierWave::Mount do
     describe '#image' do
 
       before do
-        @instance.stub!(:read_uploader).and_return('test.jpg')
+        allow(@instance).to receive(:read_uploader).and_return('test.jpg')
       end
 
       it "should return an instance of a subclass of CarrierWave::Uploader::Base" do

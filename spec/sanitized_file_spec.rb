@@ -37,19 +37,19 @@ describe CarrierWave::SanitizedFile do
 
   describe '#original_filename' do
     it "should default to the original_filename" do
-      file = mock('file', :original_filename => 'llama.jpg')
+      file = double('file', :original_filename => 'llama.jpg')
       sanitized_file = CarrierWave::SanitizedFile.new(file)
       sanitized_file.original_filename.should == "llama.jpg"
     end
 
     it "should defer to the base name of the path if original_filename is unavailable" do
-      file = mock('file', :path => '/path/to/test.jpg')
+      file = double('file', :path => '/path/to/test.jpg')
       sanitized_file = CarrierWave::SanitizedFile.new(file)
       sanitized_file.original_filename.should == "test.jpg"
     end
 
     it "should be nil otherwise" do
-      file = mock('file')
+      file = double('file')
       sanitized_file = CarrierWave::SanitizedFile.new(file)
       sanitized_file.original_filename.should be_nil
     end
@@ -186,9 +186,9 @@ describe CarrierWave::SanitizedFile do
 
     it "should handle Mime::Type object" do
       @file = File.open(file_path('sponsored.doc'))
-      @file.stub!(:content_type).and_return(MIME::Type.new('application/msword'))
+      allow(@file).to receive(:content_type).and_return(MIME::Type.new('application/msword'))
       @sanitized_file = CarrierWave::SanitizedFile.new(@file)
-      @sanitized_file.stub!(:file).and_return(@file)
+      allow(@sanitized_file).to receive(:file).and_return(@file)
       lambda { @sanitized_file.content_type }.should_not raise_error
       @sanitized_file.content_type.should == 'application/msword'
     end
@@ -286,7 +286,7 @@ describe CarrierWave::SanitizedFile do
       it "should be moved to the correct location" do
         @sanitized_file.move_to(file_path('gurr.png'))
 
-        File.exist?( file_path('gurr.png') ).should be_true
+        expect(File.exist?(file_path('gurr.png'))).to be true
       end
 
       it "should have changed its path when moved" do
@@ -335,7 +335,7 @@ describe CarrierWave::SanitizedFile do
       it "should be copied to the correct location" do
         @sanitized_file.copy_to(file_path('gurr.png'))
 
-        File.exist?( file_path('gurr.png') ).should be_true
+        expect(File.exist?(file_path('gurr.png'))).to be true
 
         file_path('gurr.png').should be_identical_to(file_path('llama.jpg'))
       end
@@ -402,7 +402,7 @@ describe CarrierWave::SanitizedFile do
       it "should remove the original file" do
         original_path = @sanitized_file.path
         @sanitized_file.move_to(public_path('blah.txt'))
-        File.exist?(original_path).should be_false
+        expect(File.exist?(original_path)).to be false
       end
     end
 
@@ -416,22 +416,22 @@ describe CarrierWave::SanitizedFile do
 
       it "should not remove the original file" do
         new_file = @sanitized_file.copy_to(public_path('blah.txt'))
-        File.exist?(@sanitized_file.path).should be_true
-        File.exist?(new_file.path).should be_true
+        expect(File.exist?(@sanitized_file.path)).to be true
+        expect(File.exist?(new_file.path)).to be true
       end
     end
 
     describe '#exists?' do
       it "should be true" do
-        @sanitized_file.exists?.should be_true
+        expect(@sanitized_file).to be_exists
       end
     end
 
     describe '#delete' do
       it "should remove it from the filesystem" do
-        File.exist?(@sanitized_file.path).should be_true
+        expect(File.exist?(@sanitized_file.path)).to be true
         @sanitized_file.delete
-        File.exist?(@sanitized_file.path).should be_false
+        expect(File.exist?(@sanitized_file.path)).to be false
       end
     end
 
@@ -454,12 +454,12 @@ describe CarrierWave::SanitizedFile do
 
     describe '#read' do
       it "should have an open IO object" do
-        @sanitized_file.instance_variable_get(:@file).closed?.should be_false
+        expect(@sanitized_file.instance_variable_get(:@file).closed?).to be false
       end
 
       it "should close the IO object after reading" do
         @sanitized_file.read
-        @sanitized_file.instance_variable_get(:@file).closed?.should be_true
+        expect(@sanitized_file.instance_variable_get(:@file).closed?).to be true
       end
     end
   end
@@ -489,7 +489,7 @@ describe CarrierWave::SanitizedFile do
 
     describe '#is_path?' do
       it "should be false" do
-        @sanitized_file.is_path?.should be_false
+        expect(@sanitized_file).not_to be_is_path
       end
     end
 
@@ -509,7 +509,7 @@ describe CarrierWave::SanitizedFile do
 
     describe '#is_path?' do
       it "should be false" do
-        @sanitized_file.is_path?.should be_false
+        expect(@sanitized_file).not_to be_is_path
       end
     end
 
@@ -533,13 +533,13 @@ describe CarrierWave::SanitizedFile do
 
     describe '#exists?' do
       it "should be false" do
-        @sanitized_file.exists?.should be_false
+        expect(@sanitized_file.exists?).to be false
       end
     end
 
     describe '#is_path?' do
       it "should be false" do
-        @sanitized_file.is_path?.should be_false
+        expect(@sanitized_file).not_to be_is_path
       end
     end
 
@@ -578,7 +578,7 @@ describe CarrierWave::SanitizedFile do
 
     describe '#is_path?' do
       it "should be false" do
-        @sanitized_file.is_path?.should be_false
+        expect(@sanitized_file).not_to be_is_path
       end
     end
 
@@ -606,7 +606,7 @@ describe CarrierWave::SanitizedFile do
 
     describe '#is_path?' do
       it "should be false" do
-        @sanitized_file.is_path?.should be_false
+        expect(@sanitized_file).not_to be_is_path
       end
     end
 
@@ -632,7 +632,7 @@ describe CarrierWave::SanitizedFile do
 
     describe '#is_path?' do
       it "should be true" do
-        @sanitized_file.is_path?.should be_true
+        expect(@sanitized_file).to be_is_path
       end
     end
 
@@ -658,7 +658,7 @@ describe CarrierWave::SanitizedFile do
 
     describe '#is_path?' do
       it "should be true" do
-        @sanitized_file.is_path?.should be_true
+        expect(@sanitized_file).to be_is_path
       end
     end
 
@@ -684,13 +684,13 @@ describe CarrierWave::SanitizedFile do
 
     describe '#exists?' do
       it "should be false" do
-        @empty.exists?.should be_false
+        expect(@empty.exists?).to be false
       end
     end
 
     describe '#is_path?' do
       it "should be false" do
-        @empty.is_path?.should be_false
+        expect(@empty.is_path?).to be false
       end
     end
 
@@ -756,13 +756,13 @@ describe CarrierWave::SanitizedFile do
 
     describe '#exists?' do
       it "should be false" do
-        @empty.exists?.should be_false
+        expect(@empty.exists?).to be false
       end
     end
 
     describe '#is_path?' do
       it "should be false" do
-        @empty.is_path?.should be_false
+        expect(@empty.is_path?).to be false
       end
     end
 

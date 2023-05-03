@@ -169,8 +169,8 @@ describe CarrierWave::RMagick do
       ::Magick::Image.stub(:read => image)
       ::Magick::Image::Info.any_instance.should_receive(:quality=).with(50)
       ::Magick::Image::Info.any_instance.should_receive(:depth=).with(8)
-      
-      @instance.manipulate! do |image, index, options| 
+
+      @instance.manipulate! do |image, index, options|
         options[:write] = {
           :quality => 50,
           :depth => 8
@@ -182,7 +182,7 @@ describe CarrierWave::RMagick do
     it 'should support passing read options to RMagick' do
       ::Magick::Image::Info.any_instance.should_receive(:density=).with(10)
       ::Magick::Image::Info.any_instance.should_receive(:size=).with("200x200")
-      
+
       @instance.manipulate! :read => {
           :density => 10,
           :size => %{"200x200"}

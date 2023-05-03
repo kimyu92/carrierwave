@@ -44,8 +44,8 @@ module CarrierWave
   module Test
     module MockStorage
       def mock_storage(kind)
-        storage = mock("storage for #{kind} uploader")
-        storage.stub!(:setup!)
+        storage = double("storage for #{kind} uploader")
+        allow(storage).to receive(:setup!)
         storage
       end
     end
@@ -82,9 +82,9 @@ module CarrierWave
         else
           t = StringIO.new
         end
-        t.stub!(:local_path => "",
-                :original_filename => filename || fake_name,
-                :content_type => mime_type)
+        allow(t).to receive(:local_path).and_return("")
+        allow(t).to receive(:original_filename).and_return(filename || fake_name)
+        allow(t).to receive(:content_type).and_return(mime_type)
         return t
       end
 

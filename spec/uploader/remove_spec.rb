@@ -17,16 +17,16 @@ describe CarrierWave::Uploader do
     before do
       @file = File.open(file_path('test.jpg'))
 
-      @stored_file = mock('a stored file')
-      @stored_file.stub!(:path).and_return('/path/to/somewhere')
-      @stored_file.stub!(:url).and_return('http://www.example.com')
-      @stored_file.stub!(:identifier).and_return('this-is-me')
-      @stored_file.stub!(:delete)
+      @stored_file = double('a stored file')
+      allow(@stored_file).to receive(:path).and_return('/path/to/somewhere')
+      allow(@stored_file).to receive(:url).and_return('http://www.example.com')
+      allow(@stored_file).to receive(:identifier).and_return('this-is-me')
+      allow(@stored_file).to receive(:delete)
 
-      @storage = mock('a storage engine')
-      @storage.stub!(:store!).and_return(@stored_file)
+      @storage = double('a storage engine')
+      allow(@storage).to receive(:store!).and_return(@stored_file)
 
-      @uploader_class.storage.stub!(:new).and_return(@storage)
+      allow(@uploader_class.storage).to receive(:new).and_return(@storage)
       @uploader.store!(@file)
     end
 

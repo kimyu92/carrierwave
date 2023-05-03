@@ -17,7 +17,7 @@ describe CarrierWave::Uploader do
 
   describe '#url' do
     before do
-      CarrierWave.stub!(:generate_cache_id).and_return('1369894322-345-2255')
+      allow(CarrierWave).to receive(:generate_cache_id).and_return('1369894322-345-2255')
     end
 
     it "should default to nil" do
@@ -34,7 +34,7 @@ describe CarrierWave::Uploader do
 
     it "should not raise ArgumentError when storage's File#url method doesn't get params" do
       module StorageX; class File; def url; true; end; end; end
-      @uploader.stub!(:file).and_return(StorageX::File.new)
+      allow(@uploader).to receive(:file).and_return(StorageX::File.new)
       lambda { @uploader.url }.should_not raise_error
     end
 
@@ -92,13 +92,13 @@ describe CarrierWave::Uploader do
 
     it "should return file#url if available" do
       @uploader.cache!(File.open(file_path('test.jpg')))
-      @uploader.file.stub!(:url).and_return('http://www.example.com/someurl.jpg')
+      allow(@uploader.file).to receive(:url).and_return('http://www.example.com/someurl.jpg')
       @uploader.url.should == 'http://www.example.com/someurl.jpg'
     end
 
     it "should get the directory relative to public, if file#url is blank" do
       @uploader.cache!(File.open(file_path('test.jpg')))
-      @uploader.file.stub!(:url).and_return('')
+      allow(@uploader.file).to receive(:url).and_return('')
       @uploader.url.should == '/uploads/tmp/1369894322-345-2255/test.jpg'
     end
 
@@ -128,14 +128,14 @@ describe CarrierWave::Uploader do
     it "shouldn't double-encode the path of an available file#url" do
       url = 'http://www.example.com/directory%2Bname/another%2Bdirectory/some%2Burl.jpg'
       @uploader.cache!(File.open(file_path('test.jpg')))
-      @uploader.file.stub!(:url).and_return(url)
+      allow(@uploader.file).to receive(:url).and_return(url)
       @uploader.url.should == url
     end
   end
 
   describe '#to_json' do
     before do
-      CarrierWave.stub!(:generate_cache_id).and_return('1369894322-345-2255')
+      allow(CarrierWave).to receive(:generate_cache_id).and_return('1369894322-345-2255')
     end
 
     it "should return a hash with a nil URL" do
@@ -170,7 +170,7 @@ describe CarrierWave::Uploader do
 
   describe '#to_xml' do
     before do
-      CarrierWave.stub!(:generate_cache_id).and_return('1369894322-345-2255')
+      allow(CarrierWave).to receive(:generate_cache_id).and_return('1369894322-345-2255')
     end
 
     it "should return a hash with a blank URL" do
@@ -197,7 +197,7 @@ describe CarrierWave::Uploader do
 
   describe '#to_s' do
     before do
-      CarrierWave.stub!(:generate_cache_id).and_return('1369894322-345-2255')
+      allow(CarrierWave).to receive(:generate_cache_id).and_return('1369894322-345-2255')
     end
 
     it "should default to empty space" do
@@ -211,7 +211,7 @@ describe CarrierWave::Uploader do
 
     it "should return file#url if available" do
       @uploader.cache!(File.open(file_path('test.jpg')))
-      @uploader.file.stub!(:url).and_return('http://www.example.com/someurl.jpg')
+      allow(@uploader.file).to receive(:url).and_return('http://www.example.com/someurl.jpg')
       @uploader.to_s.should == 'http://www.example.com/someurl.jpg'
     end
   end

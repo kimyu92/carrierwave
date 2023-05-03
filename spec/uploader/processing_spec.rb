@@ -52,7 +52,7 @@ describe CarrierWave::Uploader do
       @uploader_class.process :fancy, :if => :true?
       @uploader.should_receive(:true?).with("test.jpg").twice.and_return(true)
       @uploader.should_receive(:resize).with(200, 300)
-      @uploader.should_receive(:fancy).with()
+      @uploader.should_receive(:fancy)
       @uploader.process!("test.jpg")
     end
 
@@ -70,7 +70,7 @@ describe CarrierWave::Uploader do
       @uploader_class.process :fancy, :if => :true?
       @uploader.should_receive(:true?).with("test.jpg").twice.and_return(true)
       @uploader.should_receive(:resize).with(200, 300)
-      @uploader.should_receive(:fancy).with()
+      @uploader.should_receive(:fancy)
       @uploader.process!("test.jpg")
     end
 
@@ -138,7 +138,7 @@ describe CarrierWave::Uploader do
 
   describe '#cache!' do
     before do
-      CarrierWave.stub!(:generate_cache_id).and_return('1369894322-345-2255')
+      allow(CarrierWave).to receive(:generate_cache_id).and_return('1369894322-345-2255')
     end
 
     it "should trigger a process!" do
@@ -149,7 +149,7 @@ describe CarrierWave::Uploader do
 
   describe '#recreate_versions!' do
     before do
-      CarrierWave.stub!(:generate_cache_id).and_return('1369894322-345-2255')
+      allow(CarrierWave).to receive(:generate_cache_id).and_return('1369894322-345-2255')
     end
 
     it "should trigger a process!" do

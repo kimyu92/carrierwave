@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 lib = File.expand_path('../lib/', __FILE__)
 $:.unshift lib unless $:.include?(lib)
 
@@ -26,22 +25,23 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = ">= 2.5.0"
 
-  s.add_dependency "activesupport", ">= 6.0.0"
   s.add_dependency "activemodel", ">= 6.0.0"
+  s.add_dependency "activesupport", ">= 6.0.0"
   s.add_dependency "json", ">= 1.7"
   s.add_dependency "mime-types", ">= 1.16"
   s.add_dependency "mimemagic", ">= 0.3.0"
 
-  s.add_development_dependency "pg", "< 1"
-  s.add_development_dependency "rails", ">= 6.0.0"
   s.add_development_dependency "cucumber", "~> 8.0"
+  s.add_development_dependency "fog", "~> 1.42.1"
+  s.add_development_dependency "generator_spec"
+  s.add_development_dependency "mini_magick", ">= 3.6.0"
+  s.add_development_dependency "net-ssh", "~> 2.9.0"
+  s.add_development_dependency "pry"
+  s.add_development_dependency "rails", ">= 6.0.0"
+  s.add_development_dependency "rmagick", "< 5.0.0"
   s.add_development_dependency "rspec", "~> 3.12.0"
   s.add_development_dependency "sham_rack"
-  s.add_development_dependency "fog", "~> 1.20.0"
-  s.add_development_dependency "unf"
-  s.add_development_dependency "net-ssh", "~> 2.9.0"
-  s.add_development_dependency "mini_magick", ">= 3.6.0"
-  s.add_development_dependency "rmagick", "< 3"
+  s.add_development_dependency "sqlite3"
   s.add_development_dependency "timecop"
-  s.add_development_dependency "generator_spec"
+  s.add_development_dependency "unf"
 end

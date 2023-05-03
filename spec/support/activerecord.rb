@@ -1,15 +1,8 @@
-require 'pg'
+# encoding: utf-8
+
 require 'rails'
 require 'carrierwave/orm/activerecord'
 
-# Change this if PG is unavailable
-dbconfig = {
-  :adapter  => 'postgresql',
-  :database => 'carrierwave_test',
-  :encoding => 'utf8',
-  :username => 'postgres'
-}
-
-ActiveRecord::Base.establish_connection(dbconfig)
+ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: ':memory:')
 
 ActiveRecord::Migration.verbose = false
