@@ -1,4 +1,3 @@
-# encoding: utf-8
 
 require 'rubygems'
 require 'bundler/setup'
@@ -13,15 +12,6 @@ require 'open-uri'
 require 'sham_rack'
 require 'mini_magick'
 require 'generator_spec'
-
-require 'fog'
-require 'storage/fog_helper'
-
-unless ENV['REMOTE'] == 'true'
-  Fog.mock!
-end
-
-require 'fog_credentials' # after Fog.mock!
 
 I18n.enforce_available_locales = false
 

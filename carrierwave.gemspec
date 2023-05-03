@@ -32,7 +32,14 @@ Gem::Specification.new do |s|
   s.add_dependency "mimemagic", ">= 0.3.0"
 
   s.add_development_dependency "cucumber", "~> 8.0"
-  s.add_development_dependency "fog", "~> 1.42.1"
+  s.add_development_dependency "fog-aws", "< 3.0.0"
+  if RUBY_VERSION < '2.7'
+    s.add_development_dependency "fog-google", "~> 1.7.0"
+  else
+    s.add_development_dependency "fog-google"
+  end
+  s.add_development_dependency "fog-local"
+  s.add_development_dependency "fog-rackspace"
   s.add_development_dependency "generator_spec"
   s.add_development_dependency "mini_magick", ">= 3.6.0"
   s.add_development_dependency "net-ssh", "~> 2.9.0"

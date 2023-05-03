@@ -1,4 +1,3 @@
-# encoding: utf-8
 
 require 'carrierwave/utilities/uri'
 require 'carrierwave/utilities/deprecation'

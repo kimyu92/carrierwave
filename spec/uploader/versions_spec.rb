@@ -1,4 +1,3 @@
-# encoding: utf-8
 
 require 'spec_helper'
 
@@ -16,9 +15,8 @@ describe CarrierWave::Uploader do
   describe '.version' do
     it "should add it to .versions" do
       @uploader_class.version :thumb
-      @uploader_class.versions[:thumb].should be_a(Hash)
-      @uploader_class.versions[:thumb][:uploader].should be_a(Class)
-      @uploader_class.versions[:thumb][:uploader].ancestors.should include(@uploader_class)
+      expect(@uploader_class.versions[:thumb]).to be_a(Class)
+      expect(@uploader_class.versions[:thumb].ancestors).to include(@uploader_class)
     end
 
     it "should only assign versions to parent" do
@@ -28,35 +26,35 @@ describe CarrierWave::Uploader do
           version :micro
         end
       end
-      @uploader_class.versions.should have(2).versions
-      @uploader_class.versions.should include :large
-      @uploader_class.versions.should include :thumb
-      @uploader.large.versions.should be_empty
-      @uploader.thumb.versions.keys.should == [:mini]
-      @uploader.thumb.mini.versions.keys.should == [:micro]
-      @uploader.thumb.mini.micro.versions.should be_empty
+      expect(@uploader_class.versions.size).to eq(2)
+      expect(@uploader_class.versions).to include :large
+      expect(@uploader_class.versions).to include :thumb
+      expect(@uploader.large.versions).to be_empty
+      expect(@uploader.thumb.versions.keys).to eq([:mini])
+      expect(@uploader.thumb.mini.versions.keys).to eq([:micro])
+      expect(@uploader.thumb.mini.micro.versions).to be_empty
     end
 
     it "should add an accessor which returns the version" do
       @uploader_class.version :thumb
-      @uploader.thumb.should be_a(@uploader_class)
+      expect(@uploader.thumb).to be_a(@uploader_class)
     end
 
     it "should add it to #versions which returns the version" do
       @uploader_class.version :thumb
-      @uploader.versions[:thumb].should be_a(@uploader_class)
+      expect(@uploader.versions[:thumb]).to be_a(@uploader_class)
     end
 
     it "should set the version name" do
       @uploader_class.version :thumb
-      @uploader.version_name.should == nil
-      @uploader.thumb.version_name.should == :thumb
+      expect(@uploader.version_name).to eq(nil)
+      expect(@uploader.thumb.version_name).to eq(:thumb)
     end
 
     it "should set the version names on the class" do
       @uploader_class.version :thumb
-      @uploader.class.version_names.should == []
-      @uploader.thumb.class.version_names.should == [:thumb]
+      expect(@uploader.class.version_names).to eq([])
+      expect(@uploader.thumb.class.version_names).to eq([:thumb])
     end
 
     it "should remember mount options" do
@@ -64,8 +62,8 @@ describe CarrierWave::Uploader do
       @uploader_class.version :thumb
       @uploader = @uploader_class.new(model, :gazelle)
 
-      @uploader.thumb.model.should == model
-      @uploader.thumb.mounted_as.should == :gazelle
+      expect(@uploader.thumb.model).to eq(model)
+      expect(@uploader.thumb.mounted_as).to eq(:gazelle)
     end
 
     it "should apply any overrides given in a block" do
@@ -74,13 +72,13 @@ describe CarrierWave::Uploader do
           public_path('monkey/apache')
         end
       end
-      @uploader.store_dir.should == 'uploads'
-      @uploader.thumb.store_dir.should == public_path('monkey/apache')
+      expect(@uploader.store_dir).to eq('uploads')
+      expect(@uploader.thumb.store_dir).to eq(public_path('monkey/apache'))
     end
 
     it "should not initially have a value for enable processing" do
       thumb = (@uploader_class.version :thumb)[:uploader]
-      thumb.instance_variable_get('@enable_processing').should be_nil
+      expect(thumb.instance_variable_get('@enable_processing')).to be_nil
     end
 
     it "should return the enable processing value of the parent" do
@@ -107,13 +105,13 @@ describe CarrierWave::Uploader do
           "llama"
         end
       end
-      @uploader_class.version(:thumb)[:uploader].monkey.should == "monkey"
-      @uploader_class.version(:thumb)[:uploader].llama.should == "llama"
+      expect(@uploader_class.version(:thumb).monkey).to eq("monkey")
+      expect(@uploader_class.version(:thumb).llama).to eq("llama")
     end
 
     it "should accept option :from_version" do
       @uploader_class.version :small_thumb, :from_version => :thumb
-      @uploader_class.version(:small_thumb)[:options][:from_version].should == :thumb
+      expect(@uploader_class.version(:small_thumb).version_options[:from_version]).to eq(:thumb)
     end
 
     describe 'with nested versions' do
@@ -125,17 +123,17 @@ describe CarrierWave::Uploader do
       end
 
       it "should add an array of version names" do
-        @uploader.class.version_names.should == []
-        @uploader.thumb.class.version_names.should == [:thumb]
-        @uploader.thumb.mini.class.version_names.should == [:thumb, :mini]
-        @uploader.thumb.micro.class.version_names.should == [:thumb, :micro]
+        expect(@uploader.class.version_names).to eq([])
+        expect(@uploader.thumb.class.version_names).to eq([:thumb])
+        expect(@uploader.thumb.mini.class.version_names).to eq([:thumb, :mini])
+        expect(@uploader.thumb.micro.class.version_names).to eq([:thumb, :micro])
       end
 
       it "should set the version name for the instances" do
-        @uploader.version_name.should be_nil
-        @uploader.thumb.version_name.should == :thumb
-        @uploader.thumb.mini.version_name.should == :thumb_mini
-        @uploader.thumb.micro.version_name.should == :thumb_micro
+        expect(@uploader.version_name).to be_nil
+        expect(@uploader.thumb.version_name).to eq(:thumb)
+        expect(@uploader.thumb.mini.version_name).to eq(:thumb_mini)
+        expect(@uploader.thumb.micro.version_name).to eq(:thumb_micro)
       end
 
       it "should process nested versions" do
@@ -159,9 +157,9 @@ describe CarrierWave::Uploader do
         }
         @uploader.cache! File.open(file_path('portrait.jpg'))
 
-        @uploader.should have_dimensions(233, 337)
-        @uploader.rotated.should have_dimensions(337, 233)
-        @uploader.rotated.boxed.should have_dimensions(200, 138)
+        expect(@uploader).to have_dimensions(233, 337)
+        expect(@uploader.rotated).to have_dimensions(337, 233)
+        expect(@uploader.rotated.boxed).to have_dimensions(200, 138)
       end
     end
 
@@ -179,27 +177,27 @@ describe CarrierWave::Uploader do
       end
 
       it "should set store_path with versions" do
-        CarrierWave.should_receive(:generate_cache_id).once
+        expect(CarrierWave).to receive(:generate_cache_id).once
         @uploader.cache!(File.open(file_path('test.jpg')))
-        @uploader.store_path.should == 'uploads/test.jpg'
-        @uploader.thumb.store_path.should == 'uploads/thumb_test.jpg'
-        @uploader.thumb.store_path('kebab.png').should == 'uploads/thumb_kebab.png'
+        expect(@uploader.store_path).to eq('uploads/test.jpg')
+        expect(@uploader.thumb.store_path).to eq('uploads/thumb_test.jpg')
+        expect(@uploader.thumb.store_path('kebab.png')).to eq('uploads/thumb_kebab.png')
       end
 
       it "should move it to the tmp dir with the filename prefixed" do
-        CarrierWave.should_receive(:generate_cache_id).once
+        expect(CarrierWave).to receive(:generate_cache_id).once
         @uploader.cache!(File.open(file_path('test.jpg')))
-        @uploader.current_path.should == public_path('uploads/tmp/1369894322-345-2255/test.jpg')
-        @uploader.thumb.current_path.should == public_path('uploads/tmp/1369894322-345-2255/thumb_test.jpg')
-        expect(@uploader.file.exists?).to be true
-        expect(@uploader.thumb.file.exists?).to be true
+        expect(@uploader.current_path).to eq(public_path('uploads/tmp/1369894322-345-2255/test.jpg'))
+        expect(@uploader.thumb.current_path).to eq(public_path('uploads/tmp/1369894322-345-2255/thumb_test.jpg'))
+        expect(@uploader.file.exists?).to be_truthy
+        expect(@uploader.thumb.file.exists?).to be_truthy
       end
 
       it "should cache the files based on the parent" do
-        CarrierWave.should_receive(:generate_cache_id).once
+        expect(CarrierWave).to receive(:generate_cache_id).once
         @uploader.cache!(File.open(file_path('bork.txt')))
 
-        File.read(public_path(@uploader.to_s)).should == File.read(public_path(@uploader.thumb.to_s))
+        expect(File.read(public_path(@uploader.to_s))).to eq(File.read(public_path(@uploader.thumb.to_s)))
       end
     end
 
@@ -219,10 +217,10 @@ describe CarrierWave::Uploader do
       it "should copy the parent file when creating the version" do
         @uploader_class.version(:thumb)
         @uploader.cache!(File.open(file_path('test.jpg')))
-        @uploader.current_path.should == public_path('uploads/tmp/1369894322-345-2255/test.jpg')
-        @uploader.thumb.current_path.should == public_path('uploads/tmp/1369894322-345-2255/thumb_test.jpg')
-        expect(@uploader.file.exists?).to be true
-        expect(@uploader.thumb.file.exists?).to be true
+        expect(@uploader.current_path).to eq(public_path('uploads/tmp/1369894322-345-2255/test.jpg'))
+        expect(@uploader.thumb.current_path).to eq(public_path('uploads/tmp/1369894322-345-2255/thumb_test.jpg'))
+        expect(@uploader.file.exists?).to be_truthy
+        expect(@uploader.thumb.file.exists?).to be_truthy
       end
 
       it "should allow overriding move_to_cache on versions" do
@@ -232,25 +230,25 @@ describe CarrierWave::Uploader do
           end
         end
         @uploader.cache!(File.open(file_path('test.jpg')))
-        @uploader.current_path.should == public_path('uploads/tmp/1369894322-345-2255/test.jpg')
-        @uploader.thumb.current_path.should == public_path('uploads/tmp/1369894322-345-2255/thumb_test.jpg')
-        expect(@uploader.file.exists?).to be false
-        expect(@uploader.thumb.file.exists?).to be true
+        expect(@uploader.current_path).to eq(public_path('uploads/tmp/1369894322-345-2255/test.jpg'))
+        expect(@uploader.thumb.current_path).to eq(public_path('uploads/tmp/1369894322-345-2255/thumb_test.jpg'))
+        expect(@uploader.file.exists?).to be_falsey
+        expect(@uploader.thumb.file.exists?).to be_truthy
       end
     end
 
     describe '#retrieve_from_cache!' do
       it "should set the path to the tmp dir" do
         @uploader.retrieve_from_cache!('1369894322-345-2255/test.jpg')
-        @uploader.current_path.should == public_path('uploads/tmp/1369894322-345-2255/test.jpg')
-        @uploader.thumb.current_path.should == public_path('uploads/tmp/1369894322-345-2255/thumb_test.jpg')
+        expect(@uploader.current_path).to eq(public_path('uploads/tmp/1369894322-345-2255/test.jpg'))
+        expect(@uploader.thumb.current_path).to eq(public_path('uploads/tmp/1369894322-345-2255/thumb_test.jpg'))
       end
 
       it "should set store_path with versions" do
         @uploader.retrieve_from_cache!('1369894322-345-2255/test.jpg')
-        @uploader.store_path.should == 'uploads/test.jpg'
-        @uploader.thumb.store_path.should == 'uploads/thumb_test.jpg'
-        @uploader.thumb.store_path('kebab.png').should == 'uploads/thumb_kebab.png'
+        expect(@uploader.store_path).to eq('uploads/test.jpg')
+        expect(@uploader.thumb.store_path).to eq('uploads/thumb_test.jpg')
+        expect(@uploader.thumb.store_path('kebab.png')).to eq('uploads/thumb_kebab.png')
       end
     end
 
@@ -290,36 +288,36 @@ describe CarrierWave::Uploader do
 
       it "should set the current path for the version" do
         @uploader.store!(@file)
-        @uploader.current_path.should == '/path/to/somewhere'
-        @uploader.thumb.current_path.should == '/path/to/somewhere/thumb'
+        expect(@uploader.current_path).to eq('/path/to/somewhere')
+        expect(@uploader.thumb.current_path).to eq('/path/to/somewhere/thumb')
       end
 
       it "should set the url" do
         @uploader.store!(@file)
-        @uploader.url.should == 'http://www.example.com'
-        @uploader.thumb.url.should == 'http://www.example.com/thumb'
+        expect(@uploader.url).to eq('http://www.example.com')
+        expect(@uploader.thumb.url).to eq('http://www.example.com/thumb')
       end
 
       it "should, if a file is given as argument, set the store_path" do
         @uploader.store!(@file)
-        @uploader.store_path.should == 'uploads/test.jpg'
-        @uploader.thumb.store_path.should == 'uploads/thumb_test.jpg'
-        @uploader.thumb.store_path('kebab.png').should == 'uploads/thumb_kebab.png'
+        expect(@uploader.store_path).to eq('uploads/test.jpg')
+        expect(@uploader.thumb.store_path).to eq('uploads/thumb_test.jpg')
+        expect(@uploader.thumb.store_path('kebab.png')).to eq('uploads/thumb_kebab.png')
       end
 
       it "should instruct the storage engine to store the file and its version" do
         @uploader.cache!(@file)
-        @storage.should_receive(:store!).with(@uploader.file).and_return(:monkey)
-        @thumb_storage.should_receive(:store!).with(@uploader.thumb.file).and_return(:gorilla)
+        expect(@storage).to receive(:store!).with(@uploader.file).and_return(:monkey)
+        expect(@thumb_storage).to receive(:store!).with(@uploader.thumb.file).and_return(:gorilla)
         @uploader.store!
       end
 
       it "should process conditional versions if the condition method returns true" do
         @uploader_class.version(:preview)[:options][:if] = :true?
-        @uploader.should_receive(:true?).at_least(:once).and_return(true)
+        expect(@uploader).to receive(:true?).at_least(:once).and_return(true)
         @uploader.store!(@file)
-        @uploader.thumb.should be_present
-        @uploader.preview.should be_present
+        expect(@uploader.thumb).to be_present
+        expect(@uploader.preview).to be_present
       end
 
       it "should not process conditional versions if the condition method returns false" do
@@ -494,32 +492,33 @@ describe CarrierWave::Uploader do
         allow(@thumb_storage).to receive(:retrieve!).and_return(@thumb_stored_file)
 
         allow(@uploader_class.storage).to receive(:new).with(@uploader).and_return(@storage)
-        allow(@uploader_class.version(:thumb)[:uploader].storage).to receive(:new).with(@uploader.thumb).and_return(@thumb_storage)
+        allow(@uploader_class.version(:thumb).storage).to receive(:new).with(@uploader.thumb).and_return(@thumb_storage)
+        allow(@uploader_class.version(:preview).storage).to receive(:new).with(@uploader.preview).and_return(@preview_storage)
       end
 
       it "should set the current path" do
         @uploader.retrieve_from_store!('monkey.txt')
-        @uploader.current_path.should == '/path/to/somewhere'
-        @uploader.thumb.current_path.should == '/path/to/somewhere/thumb'
+        expect(@uploader.current_path).to eq('/path/to/somewhere')
+        expect(@uploader.thumb.current_path).to eq('/path/to/somewhere/thumb')
       end
 
       it "should set the url" do
         @uploader.retrieve_from_store!('monkey.txt')
-        @uploader.url.should == 'http://www.example.com'
-        @uploader.thumb.url.should == 'http://www.example.com/thumb'
+        expect(@uploader.url).to eq('http://www.example.com')
+        expect(@uploader.thumb.url).to eq('http://www.example.com/thumb')
       end
 
       it "should pass the identifier to the storage engine" do
-        @storage.should_receive(:retrieve!).with('monkey.txt').and_return(@base_stored_file)
-        @thumb_storage.should_receive(:retrieve!).with('monkey.txt').and_return(@thumb_stored_file)
+        expect(@storage).to receive(:retrieve!).with('monkey.txt').and_return(@base_stored_file)
+        expect(@thumb_storage).to receive(:retrieve!).with('monkey.txt').and_return(@thumb_stored_file)
         @uploader.retrieve_from_store!('monkey.txt')
-        @uploader.file.should == @base_stored_file
-        @uploader.thumb.file.should == @thumb_stored_file
+        expect(@uploader.file).to eq(@base_stored_file)
+        expect(@uploader.thumb.file).to eq(@thumb_stored_file)
       end
 
       it "should not set the filename" do
         @uploader.retrieve_from_store!('monkey.txt')
-        @uploader.filename.should be_nil
+        expect(@uploader.filename).to be_nil
       end
     end
   end
@@ -548,10 +547,9 @@ describe CarrierWave::Uploader do
       it "should cache the files based on the version" do
         @uploader.cache!(File.open(file_path('bork.txt')))
 
-        File.read(public_path(@uploader.to_s)).should_not == File.read(public_path(@uploader.thumb.to_s))
-        File.read(public_path(@uploader.thumb.to_s)).should == File.read(public_path(@uploader.small_thumb.to_s))
+        expect(File.read(public_path(@uploader.to_s))).not_to eq(File.read(public_path(@uploader.thumb.to_s)))
+        expect(File.read(public_path(@uploader.thumb.to_s))).to eq(File.read(public_path(@uploader.small_thumb.to_s)))
       end
     end
   end
-
 end
