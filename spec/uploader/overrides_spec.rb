@@ -1,4 +1,3 @@
-# encoding: utf-8
 
 require 'spec_helper'
 
@@ -8,6 +7,7 @@ describe CarrierWave::Uploader do
     @uploader_class = Class.new(CarrierWave::Uploader::Base)
     @uploader_class.configure do |config|
 
+      config.fog_provider = 'fog/aws'
       config.fog_credentials = {
           :provider               => 'AWS',         # required
           :aws_access_key_id      => 'XXXX',        # required

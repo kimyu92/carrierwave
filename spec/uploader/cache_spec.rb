@@ -1,4 +1,3 @@
-# encoding: utf-8
 
 require 'spec_helper'
 
@@ -60,7 +59,7 @@ describe CarrierWave::Uploader do
   describe '#cache!' do
 
     before do
-      CarrierWave.stub!(:generate_cache_id).and_return('1369894322-345-2255')
+      allow(CarrierWave).to receive(:generate_cache_id).and_return('1369894322-345-2255')
     end
 
     it "should cache a file" do
@@ -86,7 +85,7 @@ describe CarrierWave::Uploader do
     it "should move it to the tmp dir" do
       @uploader.cache!(File.open(file_path('test.jpg')))
       @uploader.file.path.should == public_path('uploads/tmp/1369894322-345-2255/test.jpg')
-      @uploader.file.exists?.should be_true
+      expect(@uploader.file).to be_exist
     end
 
     it "should set the url" do
@@ -157,7 +156,7 @@ describe CarrierWave::Uploader do
         @tmpfile = File.open(tmpfile)
 
         ## stub
-        CarrierWave.stub!(:generate_cache_id).and_return('1369894322-345-2255')
+        allow(CarrierWave).to receive(:generate_cache_id).and_return('1369894322-345-2255')
 
         @cached_path = public_path('uploads/tmp/1369894322-345-2255/test_move.jpeg')
         @uploader_class.permissions = 0777
@@ -177,8 +176,8 @@ describe CarrierWave::Uploader do
           original_path = @tmpfile.path
           @uploader.cache!(@tmpfile)
           @uploader.file.path.should == @cached_path
-          File.exist?(@cached_path).should be_true
-          File.exist?(original_path).should be_false
+          expect(File.exist?(@cached_path)).to be true
+          expect(File.exist?(original_path)).to be false
         end
 
         it "should use move_to() during cache!()" do
@@ -201,8 +200,8 @@ describe CarrierWave::Uploader do
           original_path = @tmpfile.path
           @uploader.cache!(@tmpfile)
           @uploader.file.path.should == @cached_path
-          File.exist?(@cached_path).should be_true
-          File.exist?(original_path).should be_true
+          expect(File.exist?(@cached_path)).to be true
+          expect(File.exist?(original_path)).to be true
         end
 
         it "should use copy_to() during cache!()" do
@@ -292,7 +291,7 @@ describe CarrierWave::Uploader do
     describe '#cache!' do
 
       before do
-        CarrierWave.stub!(:generate_cache_id).and_return('1369894322-345-2255')
+        allow(CarrierWave).to receive(:generate_cache_id).and_return('1369894322-345-2255')
       end
 
       it "should set the filename to the file's reversed filename" do
@@ -303,7 +302,7 @@ describe CarrierWave::Uploader do
       it "should move it to the tmp dir with the filename unreversed" do
         @uploader.cache!(File.open(file_path('test.jpg')))
         @uploader.current_path.should == public_path('uploads/tmp/1369894322-345-2255/test.jpg')
-        @uploader.file.exists?.should be_true
+        expect(@uploader.file).to be_exist
       end
     end
 

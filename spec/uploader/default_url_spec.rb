@@ -1,4 +1,3 @@
-# encoding: utf-8
 
 require 'spec_helper'
 
@@ -49,7 +48,7 @@ describe CarrierWave::Uploader do
     describe '#cache!' do
 
       before do
-        CarrierWave.stub!(:generate_cache_id).and_return('1369894322-345-2255')
+        allow(CarrierWave).to receive(:generate_cache_id).and_return('1369894322-345-2255')
       end
 
       it "should cache a file" do

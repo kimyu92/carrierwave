@@ -1,4 +1,3 @@
-# encoding: utf-8
 
 require 'fileutils'
 require 'active_support/core_ext/object/blank'

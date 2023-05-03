@@ -1,4 +1,3 @@
-# encoding: utf-8
 
 require 'spec_helper'
 
@@ -36,7 +35,7 @@ describe CarrierWave::Uploader::Base do
 
   describe ".storage" do
     it "should set the storage if an argument is given" do
-      storage = mock('some kind of storage')
+      storage = double('some kind of storage')
       @uploader_class.storage storage
       @uploader_class.storage.should == storage
     end
